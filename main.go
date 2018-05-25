@@ -10,12 +10,63 @@ import (
 	"github.com/go-chi/cors"
 )
 
+// MinetestMessage : test message
 type MinetestMessage struct {
 	Message string
 }
 
+// SpawnPoint : coordinates for spawn point.
+type SpawnPoint struct {
+	X int
+	Y int
+	Z int
+}
+
+// Boundary : coordinates for edges of player boundary
+type Boundary struct {
+	X1 int
+	X2 int
+	Z1 int
+	Z2 int
+}
+
+// Group : player group
+type Group struct {
+	GroupName       string
+	GroupBoundary   Boundary
+	GroupSpawnPoint SpawnPoint
+}
+
+// Player : structure to represent each player
+type Player struct {
+	Name  string
+	Group Group
+}
+
 func main() {
 	fmt.Println("Start")
+
+	// test data
+	var spawnPoint SpawnPoint
+	spawnPoint.X = 0
+	spawnPoint.Y = 10
+	spawnPoint.Z = 0
+
+	var boundary Boundary
+	boundary.X1 = 5
+	boundary.X2 = -5
+	boundary.Z1 = 5
+	boundary.Z2 = -5
+
+	var aGroup Group
+	aGroup.GroupName = "Test Group 1"
+	aGroup.GroupBoundary = boundary
+	aGroup.GroupSpawnPoint = spawnPoint
+
+	var aPlayer Player
+	aPlayer.Name = "blah#1234"
+	aPlayer.Group = aGroup
+	//end test data
 
 	r := chi.NewRouter()
 
@@ -49,6 +100,22 @@ func main() {
 		}
 		fmt.Println(m.Message)
 		json.NewEncoder(w).Encode(testFunc(r))
+	})
+	r.Post("/player", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("API /player has been hit")
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+		var m MinetestMessage
+
+		error := json.Unmarshal(body, &m)
+		if error != nil {
+			fmt.Print(error.Error())
+		}
+		fmt.Println(m.Message)
+		fmt.Println(aPlayer)
+		json.NewEncoder(w).Encode(aPlayer)
 	})
 
 	http.ListenAndServe(":3001", r)
