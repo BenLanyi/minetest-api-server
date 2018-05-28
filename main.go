@@ -53,10 +53,10 @@ func main() {
 	spawnPoint.Z = 0
 
 	var boundary Boundary
-	boundary.X1 = 5
-	boundary.X2 = -5
-	boundary.Z1 = 5
-	boundary.Z2 = -5
+	boundary.X1 = -10
+	boundary.X2 = 10
+	boundary.Z1 = -10
+	boundary.Z2 = 10
 
 	var aGroup Group
 	aGroup.GroupName = "Test Group 1"
@@ -64,7 +64,7 @@ func main() {
 	aGroup.GroupSpawnPoint = spawnPoint
 
 	var aPlayer Player
-	aPlayer.Name = "blah#1234"
+	aPlayer.Name = "blah-1234"
 	aPlayer.Group = aGroup
 	//end test data
 
