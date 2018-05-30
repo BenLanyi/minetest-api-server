@@ -46,6 +46,13 @@ type Group struct {
 type Player struct {
 	Name  string
 	Group Group
+	Token string
+}
+
+// AuthResponse : stuff
+type AuthResponse struct {
+	Response   string
+	PlayerData Player
 }
 
 func main() {
@@ -56,6 +63,11 @@ func main() {
 	spawnPoint.X = 0
 	spawnPoint.Y = 10
 	spawnPoint.Z = 0
+
+	var spawnPoint2 SpawnPoint
+	spawnPoint2.X = 5
+	spawnPoint2.Y = 10
+	spawnPoint2.Z = 5
 
 	var boundary Boundary
 	boundary.X1 = -10
@@ -68,9 +80,20 @@ func main() {
 	aGroup.GroupBoundary = boundary
 	aGroup.GroupSpawnPoint = spawnPoint
 
+	var aGroup2 Group
+	aGroup2.GroupName = "Test Group 2"
+	aGroup2.GroupBoundary = boundary
+	aGroup2.GroupSpawnPoint = spawnPoint2
+
 	var aPlayer Player
 	aPlayer.Name = "blah-1234"
 	aPlayer.Group = aGroup
+	aPlayer.Token = "123456"
+
+	var aPlayer2 Player
+	aPlayer2.Name = "blah-1234"
+	aPlayer2.Group = aGroup2
+	aPlayer2.Token = "123123"
 	//end test data
 
 	r := chi.NewRouter()
@@ -106,22 +129,22 @@ func main() {
 		fmt.Println(m.Message)
 		json.NewEncoder(w).Encode(testFunc(r))
 	})
-	r.Post("/player", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("API /player has been hit")
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			fmt.Print(err.Error())
-		}
-		var m MinetestMessage
+	// r.Post("/player", func(w http.ResponseWriter, r *http.Request) {
+	// 	fmt.Println("API /player has been hit")
+	// 	body, err := ioutil.ReadAll(r.Body)
+	// 	if err != nil {
+	// 		fmt.Print(err.Error())
+	// 	}
+	// 	var m MinetestMessage
 
-		error := json.Unmarshal(body, &m)
-		if error != nil {
-			fmt.Print(error.Error())
-		}
-		fmt.Println(m.Message)
-		fmt.Println(aPlayer)
-		json.NewEncoder(w).Encode(aPlayer)
-	})
+	// 	error := json.Unmarshal(body, &m)
+	// 	if error != nil {
+	// 		fmt.Print(error.Error())
+	// 	}
+	// 	fmt.Println(m.Message)
+	// 	fmt.Println(aPlayer)
+	// 	json.NewEncoder(w).Encode(aPlayer)
+	// })
 	r.Post("/auth", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("API /auth has been hit")
 		body, err := ioutil.ReadAll(r.Body)
@@ -129,18 +152,22 @@ func main() {
 			fmt.Print(err.Error())
 		}
 		var t PasswordToken
-
+		var response AuthResponse
 		error := json.Unmarshal(body, &t)
 		if error != nil {
 			fmt.Print(error.Error())
 		}
-		fmt.Println(t.Token)
 		if t.Token == "123456" {
-			fmt.Println("authenticated")
-			json.NewEncoder(w).Encode("authenticated")
+			response.Response = "authenticated"
+			response.PlayerData = aPlayer
+			json.NewEncoder(w).Encode(response)
+		} else if t.Token == "123123" {
+			response.Response = "authenticated"
+			response.PlayerData = aPlayer2
+			json.NewEncoder(w).Encode(response)
 		} else {
-			fmt.Println("failed")
-			json.NewEncoder(w).Encode("failed")
+			response.Response = "failed"
+			json.NewEncoder(w).Encode(response)
 		}
 
 	})
