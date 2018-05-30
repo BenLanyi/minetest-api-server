@@ -15,6 +15,11 @@ type MinetestMessage struct {
 	Message string
 }
 
+// PasswordToken : Password Token
+type PasswordToken struct {
+	Token string
+}
+
 // SpawnPoint : coordinates for spawn point.
 type SpawnPoint struct {
 	X int
@@ -116,6 +121,28 @@ func main() {
 		fmt.Println(m.Message)
 		fmt.Println(aPlayer)
 		json.NewEncoder(w).Encode(aPlayer)
+	})
+	r.Post("/auth", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("API /auth has been hit")
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+		var t PasswordToken
+
+		error := json.Unmarshal(body, &t)
+		if error != nil {
+			fmt.Print(error.Error())
+		}
+		fmt.Println(t.Token)
+		if t.Token == "123456" {
+			fmt.Println("authenticated")
+			json.NewEncoder(w).Encode("authenticated")
+		} else {
+			fmt.Println("failed")
+			json.NewEncoder(w).Encode("failed")
+		}
+
 	})
 
 	http.ListenAndServe(":3001", r)
