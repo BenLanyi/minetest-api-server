@@ -54,15 +54,6 @@ func main() {
 	fmt.Println("Start")
 
 	// test data
-	var spawnPoint SpawnPoint
-	spawnPoint.X = 0
-	spawnPoint.Y = 10
-	spawnPoint.Z = 0
-
-	var spawnPoint2 SpawnPoint
-	spawnPoint2.X = 5
-	spawnPoint2.Y = 10
-	spawnPoint2.Z = 22
 
 	var boundary Boundary
 	boundary.X1 = -10
@@ -70,11 +61,21 @@ func main() {
 	boundary.Z1 = -10
 	boundary.Z2 = 10
 
+	var spawnPoint SpawnPoint
+	spawnPoint.X = boundary.X2 - 2
+	spawnPoint.Y = 10
+	spawnPoint.Z = boundary.Z1 + 2
+
 	var boundary2 Boundary
 	boundary2.X1 = -10
 	boundary2.X2 = 10
 	boundary2.Z1 = 12
 	boundary2.Z2 = 32
+
+	var spawnPoint2 SpawnPoint
+	spawnPoint2.X = boundary2.X2 - 2
+	spawnPoint2.Y = 10
+	spawnPoint2.Z = boundary2.Z1 + 2
 
 	var aGroup Group
 	aGroup.GroupName = "Test Group 1"

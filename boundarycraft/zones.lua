@@ -13,7 +13,7 @@ function generateArea(x1, x2, y, z1, z2)
     generateLake(x2 - 4, x2 - 1, y, z2 - 5, z2 - 1)
     generateGrass(x1, x2, y, z1, z2)
 
-    --generateLand(x2 + 2, x2 + 12, y, z1, z2)
+    generateTeleportPad(x2 - 2, y + 1, z1 + 2)
     print("Area generated at " .. x1 .. ", " .. x2 .. ", " .. y .. ", " .. z1 .. ", " .. z2)
 end
 
@@ -111,4 +111,14 @@ function generateFence(x1, x2, y, z1, z2)
     for zval = z1, z2, 1 do
         minetest.set_node({x = x2, y = y, z = zval}, {name = "default:fence_wood"})
     end
+end
+
+function generateTeleportPad(x, y, z)
+    minetest.set_node({x = x, y = y, z = z}, {name = "stairs:slab_ice"})
+    minetest.set_node({x = x - 1, y = y, z = z}, {name = "stairs:slab_obsidian"})
+    minetest.set_node({x = x + 1, y = y, z = z}, {name = "stairs:slab_obsidian"})
+    minetest.set_node({x = x, y = y, z = z - 1}, {name = "stairs:slab_obsidian"})
+    minetest.set_node({x = x, y = y, z = z + 1}, {name = "stairs:slab_obsidian"})
+    minetest.set_node({x = x, y = y + 1, z = z}, {name = "boundarycraft:forcefield"})
+    minetest.set_node({x = x, y = y + 2, z = z}, {name = "boundarycraft:forcefield"})
 end

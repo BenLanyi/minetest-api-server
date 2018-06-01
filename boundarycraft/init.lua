@@ -1,4 +1,5 @@
 dofile(minetest.get_modpath("boundarycraft") .. "/zones.lua")
+dofile(minetest.get_modpath("boundarycraft") .. "/custom_nodes.lua")
 
 print("Mod Loaded")
 
@@ -30,6 +31,11 @@ minetest.register_on_player_receive_fields(
 -- Show login window when player connects
 minetest.register_on_joinplayer(
     function(player)
+        -- Set privileges here, will likely need to be different for student, teacher etc.
+        local privs = minetest.get_player_privs(player:get_player_name())
+        privs.isStudent = true
+        minetest.set_player_privs(player:get_player_name(), privs)
+        --
         minetest.show_formspec(
             player:get_player_name(),
             "mymod:login",
@@ -198,6 +204,9 @@ function setPlayerConfiguration(data, player)
         thisPlayer.configuration.Group.GroupBoundary.Z2
     )
     --end generate area
+    if minetest.get_player_privs(player:get_player_name()).isStudent then
+        print("you are a student")
+    end
 end
 
 -- Set chat message commands
