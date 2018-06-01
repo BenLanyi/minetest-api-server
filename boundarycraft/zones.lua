@@ -85,18 +85,6 @@ function generateLake(x1, x2, y, z1, z2)
     end
 end
 
--- -- creates unbreakable version of the fence
--- minetest.register_node(
---     "boundarycraft:boundary_fence",
---     {
---         description = "Boundary Fence",
---         texture = "default_fence_wood.png",
---         material = "default:wood",
---         groups = {unbreakable = 1},
---         sounds = default.node_sound_wood_defaults()
---     }
--- )
-
 -- Creates boundary fence
 function generateFence(x1, x2, y, z1, z2)
     for xval = x1, x2, 1 do
