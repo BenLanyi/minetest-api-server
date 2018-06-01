@@ -14,6 +14,7 @@ function generateArea(x1, x2, y, z1, z2)
     generateGrass(x1, x2, y, z1, z2)
 
     --generateLand(x2 + 2, x2 + 12, y, z1, z2)
+    print("Area generated at " .. x1 .. ", " .. x2 .. ", " .. y .. ", " .. z1 .. ", " .. z2)
 end
 
 -- Clears surface of land mass, anything above level 0
@@ -60,17 +61,20 @@ end
 function generateGrass(x1, x2, y, z1, z2)
     local xval = nil
     local zval = nil
-    for passes = 1, 10, 1 do
+    local currentNode = nil
+    local nodeBelow = nil
+    local patchesOfGrass = 0
+    while patchesOfGrass < 10 do
         xval = math.random(x1, x2)
         zval = math.random(z1, z2)
         currentNode = minetest.get_node({x = xval, y = y + 1, z = zval})
         nodeBelow = minetest.get_node({x = xval, y = y, z = zval})
-        print(nodeBelow.name)
         if currentNode.name == "air" and nodeBelow.name == "default:dirt_with_grass" then
-            print("grass generated")
             minetest.set_node({x = xval, y = y + 1, z = zval}, {name = "default:grass_1"})
+            patchesOfGrass = patchesOfGrass + 1
         end
     end
+    print(patchesOfGrass .. " patches of grass generated")
 end
 
 function generateLake(x1, x2, y, z1, z2)

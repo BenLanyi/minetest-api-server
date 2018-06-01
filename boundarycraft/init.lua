@@ -128,17 +128,52 @@ minetest.register_globalstep(
     end
 )
 
+-- Check if node is outside boundary
+function nodeOutsideBoundary(pos, player)
+    if
+        pos.x <= playerList[player:get_player_name()].configuration.Group.GroupBoundary.X1 or
+            pos.x >= playerList[player:get_player_name()].configuration.Group.GroupBoundary.X2
+     then
+        return true
+    else
+        if
+            pos.z <= playerList[player:get_player_name()].configuration.Group.GroupBoundary.Z1 or
+                pos.z >= playerList[player:get_player_name()].configuration.Group.GroupBoundary.Z2
+         then
+            return true
+        else
+            return false
+        end
+    end
+end
+
 -- Prevent player from destroying nodes outside of their boundary
 local old_node_dig = minetest.node_dig
 function minetest.node_dig(pos, node, digger)
-    -- if pos. then
-    -- 	return
-    -- else
-    print(pos.x)
-    return old_node_dig(pos, node, digger)
-    -- end
+    if nodeOutsideBoundary(pos, digger) then
+        minetest.chat_send_player(digger:get_player_name(), "You can't mine blocks here.")
+        return
+    else
+        return old_node_dig(pos, node, digger)
+    end
 end
 
+-- Prevent player from placing nodes outside of their boundary
+local old_node_place = minetest.item_place
+function minetest.item_place(itemstack, placer, pointed_thing)
+    if itemstack:get_definition().type == "node" then
+        local pos = pointed_thing.above
+        if nodeOutsideBoundary(pos, placer) then
+            minetest.chat_send_player(placer:get_player_name(), "You can't place blocks here.")
+            return itemstack
+        end
+        return old_node_place(itemstack, placer, pointed_thing)
+    end
+
+    return old_node_place(itemstack, placer, pointed_thing)
+end
+
+-- Add player to player list and set configuration if token matches
 function setPlayerConfiguration(data, player)
     local thisPlayer = {
         reference = player,

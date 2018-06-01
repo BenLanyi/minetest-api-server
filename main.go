@@ -10,11 +10,6 @@ import (
 	"github.com/go-chi/cors"
 )
 
-// MinetestMessage : test message
-type MinetestMessage struct {
-	Message string
-}
-
 // PasswordToken : Password Token
 type PasswordToken struct {
 	Token string
@@ -67,13 +62,19 @@ func main() {
 	var spawnPoint2 SpawnPoint
 	spawnPoint2.X = 5
 	spawnPoint2.Y = 10
-	spawnPoint2.Z = 5
+	spawnPoint2.Z = 22
 
 	var boundary Boundary
 	boundary.X1 = -10
 	boundary.X2 = 10
 	boundary.Z1 = -10
 	boundary.Z2 = 10
+
+	var boundary2 Boundary
+	boundary2.X1 = -10
+	boundary2.X2 = 10
+	boundary2.Z1 = 12
+	boundary2.Z2 = 32
 
 	var aGroup Group
 	aGroup.GroupName = "Test Group 1"
@@ -82,7 +83,7 @@ func main() {
 
 	var aGroup2 Group
 	aGroup2.GroupName = "Test Group 2"
-	aGroup2.GroupBoundary = boundary
+	aGroup2.GroupBoundary = boundary2
 	aGroup2.GroupSpawnPoint = spawnPoint2
 
 	var aPlayer Player
@@ -114,37 +115,6 @@ func main() {
 		fmt.Println("API / has been hit")
 		w.Write([]byte("welcome"))
 	})
-	r.Post("/test", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("API /test has been hit")
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			fmt.Print(err.Error())
-		}
-		var m MinetestMessage
-
-		error := json.Unmarshal(body, &m)
-		if error != nil {
-			fmt.Print(error.Error())
-		}
-		fmt.Println(m.Message)
-		json.NewEncoder(w).Encode(testFunc(r))
-	})
-	// r.Post("/player", func(w http.ResponseWriter, r *http.Request) {
-	// 	fmt.Println("API /player has been hit")
-	// 	body, err := ioutil.ReadAll(r.Body)
-	// 	if err != nil {
-	// 		fmt.Print(err.Error())
-	// 	}
-	// 	var m MinetestMessage
-
-	// 	error := json.Unmarshal(body, &m)
-	// 	if error != nil {
-	// 		fmt.Print(error.Error())
-	// 	}
-	// 	fmt.Println(m.Message)
-	// 	fmt.Println(aPlayer)
-	// 	json.NewEncoder(w).Encode(aPlayer)
-	// })
 	r.Post("/auth", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("API /auth has been hit")
 		body, err := ioutil.ReadAll(r.Body)
@@ -173,13 +143,4 @@ func main() {
 	})
 
 	http.ListenAndServe(":3001", r)
-}
-
-// unmarshalToPerson : takes r http.Request and returns Person object
-func testFunc(r *http.Request) string {
-	// body, err := ioutil.ReadAll(r.Body)
-	// if err != nil {
-	// 	fmt.Print(err.Error())
-	// }
-	return "message from go API"
 }
